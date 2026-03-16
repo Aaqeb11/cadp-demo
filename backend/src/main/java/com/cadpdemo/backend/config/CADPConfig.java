@@ -13,19 +13,23 @@ public class CADPConfig {
     private String server;
 
     @Value("${cadp.registration-token}")
-    private String regToken;
+    private String registrationToken;
 
-    @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE)
-    public CommandLineRunner registerCADPClient() {
-        return args -> {
+    @PostConstruct
+    public void registerCADPClient() {
+        try {
             RegisterClientParameters params =
                 new RegisterClientParameters.Builder(
                     server,
-                    regToken.toCharArray()
+                    registrationToken.toCharArray()
                 ).build();
             new CentralManagementProvider(params).addProvider();
-            System.out.println("CADP client registered.");
-        };
+            System.out.println("CADP client registered successfully.");
+        } catch (Exception e) {
+            throw new RuntimeException(
+                "Failed to register CADP client: " + e.getMessage(),
+                e
+            );
+        }
     }
 }

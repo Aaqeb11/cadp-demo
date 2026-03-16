@@ -23,7 +23,6 @@ public class FileMeta {
     @Column(name = "uploaded_at")
     private Instant uploadedAt;
 
-    // Getters & Setters
     public Long getId() {
         return id;
     }
@@ -32,31 +31,31 @@ public class FileMeta {
         return originalName;
     }
 
-    public void setOriginalName(String originalName) {
-        this.originalName = originalName;
+    public void setOriginalName(String n) {
+        this.originalName = n;
     }
 
     public String getContentType() {
         return contentType;
     }
 
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
+    public void setContentType(String c) {
+        this.contentType = c;
     }
 
     public byte[] getEncryptedData() {
         return encryptedData;
     }
 
-    public void setEncryptedData(byte[] encryptedData) {
-        this.encryptedData = encryptedData;
+    public void setEncryptedData(byte[] d) {
+        this.encryptedData = d;
     }
 
     public Instant getUploadedAt() {
         return uploadedAt;
     }
 
-    public void setUploadedAt(Instant uploadedAt) {
-        this.uploadedAt = uploadedAt;
+    public void setUploadedAt(Instant t) {
+        this.uploadedAt = t;
     }
 }

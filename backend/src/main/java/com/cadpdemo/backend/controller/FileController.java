@@ -26,17 +26,14 @@ public class FileController {
     @PostMapping("/upload")
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file)
         throws Exception {
-        // Basic validation
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body(
-                Map.of("error", "File is empty.")
-            );
-        }
-        if (file.getSize() > 50 * 1024 * 1024) {
-            return ResponseEntity.badRequest().body(
-                Map.of("error", "File exceeds 50MB limit.")
-            );
-        }
+        if (file.isEmpty()) return ResponseEntity.badRequest().body(
+            Map.of("error", "File is empty.")
+        );
+        if (
+            file.getSize() > 50L * 1024 * 1024
+        ) return ResponseEntity.badRequest().body(
+            Map.of("error", "File exceeds 50MB limit.")
+        );
 
         byte[] encryptedBytes = enc.encryptFile(file.getInputStream());
 
@@ -63,7 +60,6 @@ public class FileController {
         FileMeta meta = fileRepo
             .findById(id)
             .orElseThrow(() -> new RuntimeException("File not found: " + id));
-
         byte[] decrypted = enc.decryptFile(meta.getEncryptedData());
 
         return ResponseEntity.ok()

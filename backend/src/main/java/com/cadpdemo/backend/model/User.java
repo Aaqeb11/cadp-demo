@@ -19,7 +19,6 @@ public class User {
     @Column(name = "encrypted_ssn")
     private byte[] encryptedSsn;
 
-    // Getters & Setters
     public Long getId() {
         return id;
     }
@@ -36,15 +35,15 @@ public class User {
         return encryptedEmail;
     }
 
-    public void setEncryptedEmail(byte[] encryptedEmail) {
-        this.encryptedEmail = encryptedEmail;
+    public void setEncryptedEmail(byte[] e) {
+        this.encryptedEmail = e;
     }
 
     public byte[] getEncryptedSsn() {
         return encryptedSsn;
     }
 
-    public void setEncryptedSsn(byte[] encryptedSsn) {
-        this.encryptedSsn = encryptedSsn;
+    public void setEncryptedSsn(byte[] s) {
+        this.encryptedSsn = s;
     }
 }

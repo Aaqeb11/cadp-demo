@@ -28,13 +28,11 @@ public class EncryptionService {
         return ct.getCipherText();
     }
 
-    public String decryptField(byte[] ciphertext) throws Exception {
-        // Use the overload that takes raw byte[] directly
-        byte[] revealed = CryptoManager.reveal(ciphertext, policy, userSet);
-        return new String(revealed);
+    public String decryptField(byte[] storedBytes) throws Exception {
+        CipherTextData ct = new CipherTextData();
+        ct.setCipherText(storedBytes);
+        return new String(CryptoManager.reveal(ct, policy, userSet));
     }
-
-    // ── Chunked file ─────────────────────────────────────────────────
 
     public byte[] encryptFile(InputStream inputStream) throws Exception {
         ByteArrayOutputStream encryptedOutput = new ByteArrayOutputStream();
@@ -45,8 +43,6 @@ public class EncryptionService {
             byte[] chunk = Arrays.copyOf(buffer, bytesRead);
             CipherTextData ct = CryptoManager.protect(chunk, policy);
             byte[] encryptedChunk = ct.getCipherText();
-
-            // Prefix each chunk with its length (4 bytes) for reassembly
             encryptedOutput.write(
                 ByteBuffer.allocate(4).putInt(encryptedChunk.length).array()
             );
@@ -63,12 +59,9 @@ public class EncryptionService {
         while (in.read(lenBytes) == 4) {
             int chunkLen = ByteBuffer.wrap(lenBytes).getInt();
             byte[] encryptedChunk = in.readNBytes(chunkLen);
-            byte[] decryptedChunk = CryptoManager.reveal(
-                encryptedChunk,
-                policy,
-                userSet
-            );
-            out.write(decryptedChunk);
+            CipherTextData ct = new CipherTextData();
+            ct.setCipherText(encryptedChunk);
+            out.write(CryptoManager.reveal(ct, policy, userSet));
         }
         return out.toByteArray();
     }

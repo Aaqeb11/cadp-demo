@@ -19,7 +19,7 @@ public class EncryptionService {
     @Value("${cadp.user-set}")
     private String userSet;
 
-    private static final int CHUNK_SIZE = 16;
+    private static final int CHUNK_SIZE = 2048;
 
     // ── Field-level ──────────────────────────────────────────────────
 

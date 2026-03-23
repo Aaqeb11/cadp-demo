@@ -9,7 +9,7 @@ export default defineConfig({
     allowedHosts: ["all", "legend-rhizocephalous-magaret.ngrok-free.dev"],
     proxy: {
       "/api": {
-        target: "https://7c400bc69cfa66.lhr.life",
+        target: "https://6113c1302ee6ee.lhr.life",
         changeOrigin: true,
       },
     },

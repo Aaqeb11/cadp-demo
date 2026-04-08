@@ -17,6 +17,7 @@ FROM eclipse-temurin:21-jre-jammy AS runtime
 WORKDIR /app
 
 RUN groupadd --system appgroup && useradd --system --gid appgroup appuser
+RUN mkdir -p /app/BOOT-INF/lib && chown -R appuser:appgroup /app/BOOT-INF/lib && chmod -R 775 /app/BOOT-INF/lib
 COPY --from=builder /app/target/extracted/dependencies/ ./
 COPY --from=builder /app/target/extracted/spring-boot-loader/ ./
 COPY --from=builder /app/target/extracted/snapshot-dependencies/ ./

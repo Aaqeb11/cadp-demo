@@ -1,13 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>4.0.3</version>
-        <relativePath/>
+        <relativePath />
     </parent>
 
     <groupId>com.cadpdemo</groupId>
@@ -62,21 +65,24 @@
             <artifactId>cadp-for-java</artifactId>
             <version>8.18.1.000</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/CADP_for_JAVA-8.18.1.000.jar</systemPath>
+            <systemPath
+            >${project.basedir}/libs/CADP_for_JAVA-8.18.1.000.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.thales</groupId>
             <artifactId>safenet-vaultless</artifactId>
             <version>8.10.0.000</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/SafeNetVaultlessTokenization-8.10.0.000.jar</systemPath>
+            <systemPath
+            >${project.basedir}/libs/SafeNetVaultlessTokenization-8.10.0.000.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.thales</groupId>
             <artifactId>cryptodatautility</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/cryptodatautility.jar</systemPath>
+            <systemPath
+            >${project.basedir}/libs/cryptodatautility.jar</systemPath>
         </dependency>
 
         <!-- ── BouncyCastle ────────────────────────────────────────── -->
@@ -160,6 +166,9 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <includeSystemScope>true</includeSystemScope>
+                    <layers>
+                        <enabled>true</enabled>
+                    </layers>
                 </configuration>
             </plugin>
         </plugins>

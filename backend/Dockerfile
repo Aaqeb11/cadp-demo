@@ -16,16 +16,19 @@ RUN java -Djarmode=layertools -jar target/*.jar extract --destination target/ext
 FROM eclipse-temurin:21-jre-jammy AS runtime
 WORKDIR /app
 
-RUN groupadd --system appgroup && useradd --system --gid appgroup appuser
-RUN mkdir -p /app/BOOT-INF/lib && chown -R appuser:appgroup /app/BOOT-INF/lib && chmod -R 775 /app/BOOT-INF/lib
+# Copy all layers first (as root, so files are created with correct ownership next)
 COPY --from=builder /app/target/extracted/dependencies/ ./
 COPY --from=builder /app/target/extracted/spring-boot-loader/ ./
 COPY --from=builder /app/target/extracted/snapshot-dependencies/ ./
 COPY --from=builder /app/target/extracted/application/ ./
 
+# Create user and fix permissions AFTER all files are copied
+RUN groupadd --system appgroup && useradd --system --gid appgroup appuser \
+    && chown -R appuser:appgroup /app \
+    && chmod -R 775 /app
+
 USER appuser
 EXPOSE 8080
-
 
 ENTRYPOINT ["java", \
   "-XX:+UseContainerSupport", \

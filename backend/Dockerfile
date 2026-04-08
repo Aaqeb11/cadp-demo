@@ -2,12 +2,12 @@ FROM maven:3.9.6-eclipse-temurin-21 AS deps
 WORKDIR /app
 
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
+COPY libs/ ./libs/
+RUN mvn dependency:resolve -B || true
 
 FROM deps AS builder
 WORKDIR /app
 
-COPY libs/ ./libs/
 COPY src ./src
 RUN mvn clean package -DskipTests -B
 

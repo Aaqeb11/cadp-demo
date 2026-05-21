@@ -109,10 +109,10 @@ export default function FileUpload() {
             <span className="font-semibold text-gray-400">Chunks Formed:</span>{" "}
             {uploadInfo.numChunks}
           </p>
-          <p>
+          {/* <p>
             <span className="font-semibold text-gray-400">Chunk Sizes:</span>{" "}
             {uploadInfo.chunkSizes.join(", ")} bytes
-          </p>
+          </p>*/}
         </div>
       )}
 
@@ -159,10 +159,10 @@ export default function FileUpload() {
             </span>{" "}
             {downloadInfo.numChunks}
           </p>
-          <p>
+          {/* <p>
             <span className="font-semibold text-gray-400">Chunk Sizes:</span>{" "}
             {downloadInfo.chunkSizes.join(", ")} bytes
-          </p>
+          </p>*/}
         </div>
       )}
     </div>

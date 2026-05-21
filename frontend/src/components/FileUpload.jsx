@@ -6,16 +6,23 @@ export default function FileUpload() {
   const [status, setStatus] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [lookupId, setLookupId] = useState("");
+  const [uploadInfo, setUploadInfo] = useState(null);
+  const [downloadInfo, setDownloadInfo] = useState(null);
 
   const handleUpload = async () => {
     if (!file) return;
     setUploading(true);
     setStatus(null);
+    setUploadInfo(null);
     try {
       const res = await uploadFile(file);
       setStatus({
         type: "success",
         msg: `File encrypted & stored. ID: ${res.id}`,
+      });
+      setUploadInfo({
+        numChunks: res.numChunks,
+        chunkSizes: res.chunkSizes,
       });
       setLookupId(String(res.id));
     } catch (err) {
@@ -26,8 +33,19 @@ export default function FileUpload() {
   };
 
   const handleDownload = async () => {
+    setDownloadInfo(null);
     try {
       const res = await downloadFile(lookupId);
+
+      const numChunks = res.headers.get("X-Num-Chunks");
+      const chunkSizes = res.headers.get("X-Chunk-Sizes");
+      if (numChunks && chunkSizes) {
+        setDownloadInfo({
+          numChunks: parseInt(numChunks, 10),
+          chunkSizes: JSON.parse(chunkSizes),
+        });
+      }
+
       const blob = await res.blob();
       const disposition = res.headers.get("Content-Disposition");
       const filename = disposition
@@ -85,6 +103,19 @@ export default function FileUpload() {
         </button>
       </div>
 
+      {uploadInfo && (
+        <div className="text-sm text-gray-300 bg-gray-800 p-3 rounded-md mt-2 space-y-1">
+          <p>
+            <span className="font-semibold text-gray-400">Chunks Formed:</span>{" "}
+            {uploadInfo.numChunks}
+          </p>
+          <p>
+            <span className="font-semibold text-gray-400">Chunk Sizes:</span>{" "}
+            {uploadInfo.chunkSizes.join(", ")} bytes
+          </p>
+        </div>
+      )}
+
       {status && (
         <p
           className={`text-sm px-3 py-2 rounded-md ${
@@ -119,6 +150,21 @@ export default function FileUpload() {
           </button>
         </div>
       </div>
+
+      {downloadInfo && (
+        <div className="text-sm text-gray-300 bg-gray-800 p-3 rounded-md mt-2 space-y-1">
+          <p>
+            <span className="font-semibold text-gray-400">
+              Chunks Decrypted:
+            </span>{" "}
+            {downloadInfo.numChunks}
+          </p>
+          <p>
+            <span className="font-semibold text-gray-400">Chunk Sizes:</span>{" "}
+            {downloadInfo.chunkSizes.join(", ")} bytes
+          </p>
+        </div>
+      )}
     </div>
   );
 }

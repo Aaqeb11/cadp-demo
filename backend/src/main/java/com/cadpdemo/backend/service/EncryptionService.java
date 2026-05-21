@@ -34,35 +34,86 @@ public class EncryptionService {
         return new String(CryptoManager.reveal(ct, policy, userSet));
     }
 
-    public byte[] encryptFile(InputStream inputStream) throws Exception {
+    public static class FileOperationResult {
+
+        private byte[] data;
+        private int numChunks;
+        private java.util.List<Integer> chunkSizes;
+
+        public FileOperationResult(
+            byte[] data,
+            int numChunks,
+            java.util.List<Integer> chunkSizes
+        ) {
+            this.data = data;
+            this.numChunks = numChunks;
+            this.chunkSizes = chunkSizes;
+        }
+
+        public byte[] getData() {
+            return data;
+        }
+
+        public int getNumChunks() {
+            return numChunks;
+        }
+
+        public java.util.List<Integer> getChunkSizes() {
+            return chunkSizes;
+        }
+    }
+
+    public FileOperationResult encryptFile(InputStream inputStream)
+        throws Exception {
         ByteArrayOutputStream encryptedOutput = new ByteArrayOutputStream();
         byte[] buffer = new byte[CHUNK_SIZE];
         int bytesRead;
+        int numChunks = 0;
+        java.util.List<Integer> chunkSizes = new java.util.ArrayList<>();
 
         while ((bytesRead = inputStream.read(buffer)) != -1) {
             byte[] chunk = Arrays.copyOf(buffer, bytesRead);
             CipherTextData ct = CryptoManager.protect(chunk, policy);
             byte[] encryptedChunk = ct.getCipherText();
+
+            numChunks++;
+            chunkSizes.add(encryptedChunk.length);
+
             encryptedOutput.write(
                 ByteBuffer.allocate(4).putInt(encryptedChunk.length).array()
             );
             encryptedOutput.write(encryptedChunk);
         }
-        return encryptedOutput.toByteArray();
+        return new FileOperationResult(
+            encryptedOutput.toByteArray(),
+            numChunks,
+            chunkSizes
+        );
     }
 
-    public byte[] decryptFile(byte[] encryptedData) throws Exception {
+    public FileOperationResult decryptFile(byte[] encryptedData)
+        throws Exception {
         ByteArrayInputStream in = new ByteArrayInputStream(encryptedData);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         byte[] lenBytes = new byte[4];
+        int numChunks = 0;
+        java.util.List<Integer> chunkSizes = new java.util.ArrayList<>();
 
         while (in.read(lenBytes) == 4) {
             int chunkLen = ByteBuffer.wrap(lenBytes).getInt();
             byte[] encryptedChunk = in.readNBytes(chunkLen);
+
+            numChunks++;
+            chunkSizes.add(chunkLen);
+
             CipherTextData ct = new CipherTextData();
             ct.setCipherText(encryptedChunk);
             out.write(CryptoManager.reveal(ct, policy, userSet));
         }
-        return out.toByteArray();
+        return new FileOperationResult(
+            out.toByteArray(),
+            numChunks,
+            chunkSizes
+        );
     }
 }
